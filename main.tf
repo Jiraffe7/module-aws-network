@@ -27,9 +27,9 @@ resource "aws_subnet" "public-subnet-a" {
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    "Name"                                        = ("${local.vpc_name}-public-subnet-a")
-    "kubernetes.io/cluster/${local.cluster.name}" = "shared"
-    "kubernetes.io/role.elb"                      = "1"
+    "Name"                                        = "${local.vpc_name}-public-subnet-a"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
   }
 }
 
@@ -39,9 +39,9 @@ resource "aws_subnet" "public-subnet-b" {
   availability_zone = data.aws_availability_zones.available.names[1]
 
   tags = {
-    "Name"                                        = ("${local.vpc_name}-public-subnet-b")
-    "kubernetes.io/cluster/${local.cluster.name}" = "shared"
-    "kubernetes.io/role.elb"                      = "1"
+    "Name"                                        = "${local.vpc_name}-public-subnet-b"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
   }
 }
 
@@ -51,9 +51,9 @@ resource "aws_subnet" "private-subnet-a" {
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    "Name"                                        = ("${local.vpc_name}-private-subnet-a")
-    "kubernetes.io/cluster/${local.cluster.name}" = "shared"
-    "kubernetes.io/role.elb"                      = "1"
+    "Name"                                        = "${local.vpc_name}-private-subnet-a"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
 }
 
@@ -63,9 +63,9 @@ resource "aws_subnet" "private-subnet-b" {
   availability_zone = data.aws_availability_zones.available.names[1]
 
   tags = {
-    "Name"                                        = ("${local.vpc_name}-private-subnet-b")
-    "kubernetes.io/cluster/${local.cluster.name}" = "shared"
-    "kubernetes.io/role.elb"                      = "1"
+    "Name"                                        = "${local.vpc_name}-private-subnet-b"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
 }
 
@@ -81,7 +81,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_route_table" "public-route" {
   vpc_id = aws_vpc.main.id
 
-  route = {
+  route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
@@ -141,7 +141,8 @@ resource "aws_nat_gateway" "nat-gw-b" {
 
 resource "aws_route_table" "private-route-a" {
   vpc_id = aws_vpc.main.id
-  route = {
+
+  route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat-gw-a.id
   }
@@ -153,7 +154,8 @@ resource "aws_route_table" "private-route-a" {
 
 resource "aws_route_table" "private-route-b" {
   vpc_id = aws_vpc.main.id
-  route = {
+
+  route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat-gw-b.id
   }
